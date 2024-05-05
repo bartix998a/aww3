@@ -1,0 +1,78 @@
+<html>
+ 
+<head>
+    <title>To set position of an image</title>
+    <style>
+        
+        #background {
+            width: {{ image.sizex }};
+            height: {{ image.sizey }};
+            background-color: white;
+            position: relative;
+        }
+        {% for rect in rect_set %}
+        #object{{ rect.id }} {
+            width: {{ rect.sizex }}px;
+            height: {{ rect.sizey }}px;
+            background-color: {{ rect.color }};
+            object-fit: none;
+            position: absolute;
+            left: {{ rect.x }}px; 
+            top: {{ rect.y }}px;
+        }
+        {% endfor %}
+    </style>
+</head>
+ 
+<body>
+    <h1> {{ image.title }} </h1>
+    <div id="background">
+        {% for rect in rect_set %}
+        <div id="object{{ rect.id }}"></div>
+        {% endfor %}
+    </div>
+	<table>
+		<tr>
+			<th> x </th>
+			<th> y </th>
+			<th> size x </th>
+			<th> size y </th>
+			<th> color </th>
+			<th>  </th>
+		</tr>
+		{% for rect in rect_set %}
+		<tr>
+			<td> {{ rect.x }} </td>
+			<td> {{ rect.y }} </td>
+			<td> {{ rect.sizex }} </td>
+			<td> {{ rect.sizey }} </td>
+			<td> {{ rect.color }} </td>
+			<td>
+				<form action="remove_rect/{{ rect.id }}" method="post">
+					{% csrf_token %}
+					<button id='rect' name="user" value="{{ user }}"> remove </button> 
+				</form>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+	<form action="add" method="post">
+			{% csrf_token %}
+			<label >color:</label><br>
+			<input type="text" id="color" name="color" value="{{ color }}" required><br><br>
+
+			<label>x:</label><br>
+			<input type="number" id="x" name="x" value="{{ x }}" required><br><br>
+			<label>y:</label><br>
+			<input type="number" id="y" name="y" value="{{ y }}" required><br><br>
+			<label>size x:</label><br>
+			<input type="number" id="sizex" name="sizex" value="{{ sizex }}" required><br><br>
+			<label>size y:</label><br>
+			<input type="number" id="sizey" name="sizey" value="{{ sizey }}" required><br><br>
+			<input type='hidden' id="user" name="user" value="{{ user }}">
+			<button type="submit" id='image' name='image'  value={{ image.id }}> save </button>
+	</form>
+
+</body>
+ 
+</html>

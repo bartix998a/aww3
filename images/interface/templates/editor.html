@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML List</title>
+</head>
+<body>
+
+<h2>Obrazki</h2>
+<ol>
+	{% for image in image_set %}
+	<li> {{ image.title }}
+	
+	<form action="edit/{{ image.id }}" method="post">
+		{% csrf_token %}
+		<button id='username' name="user" value={{ user }}> edit </button> 
+	</form>
+
+	</li>
+	{% endfor %}
+</ol>
+
+</body>
+</html>

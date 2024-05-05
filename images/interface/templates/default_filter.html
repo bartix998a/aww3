@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+	{% for image in images %}
+	#background{{ image.id }} {
+            width: 100px;
+            height: 100px;
+			object-fit: scale-down;
+            background-color: white;
+            position: relative;
+        }
+	
+    {% for rect in image.rect_set.all %}
+        #object{{ rect.id }} {
+            width: {% widthratio 100 image.sizex rect.sizex %}px;
+            height: {% widthratio 100 image.sizex rect.sizey %}px;
+            background-color: {{ rect.color }};
+            object-fit: scale-down;
+            position: absolute;
+            left: {% widthratio 100 image.sizex rect.x %}px; 
+            top: {% widthratio 100 image.sizex rect.y %}px;
+        }
+    {% endfor %}
+	{% endfor %}
+  </style>
+  <title>HTML List</title>
+</head>
+<body>
+
+<div class="grid grid-cols-3">
+	<div class="col-span-1">
+		<h2>tags</h2>
+	</div>
+<div>
+	<h1 class="text-xl">Images</h1><br>
+	<ol class="list-decimal">
+		{% for image in images %}
+		<li>
+			<p> {{ image.title }} </p>
+		</li>
+		<a href="{% url 'interface:picture' image.id %}">
+		<div class='w-28 h-28 object-scale-down'>
+			<div id="background{{ image.id }}">
+				{% for rect in image.rect_set.all %}
+					<div id="object{{ rect.id }}"></div>
+				{% endfor %}
+			</div>
+		</div>
+	</a>
+		{% endfor %}
+		<a href="{% url 'interface:page' next %}"> Next </a> <br>
+		<a href="{% url 'interface:page' prev %}"> Previus </a>
+	</ol>
+</div>
+<div></div>
+</div>
+
+</body>
+</html>
