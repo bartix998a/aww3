@@ -23,7 +23,7 @@ class Command(BaseCommand):
 				tag.save()
 			im.tags.add(tag)
 			for color in ["red", "blue", "green"]:
-				x = random.randint(0,999)
-				y = random.randint(0,999)
-				rect = Rect(x=x, y=y, sizex = random.randint(0, 999 - x), sizey=random.randint(0, 999-y), image=im, color=color)
+				x = random.randint(0,998)
+				y = random.randint(0,998)
+				rect = Rect(x=x, y=y, sizex = random.randint(1, 999 - x), sizey=random.randint(1, 999-y), image=im, color=color)
 				rect.save()

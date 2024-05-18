@@ -18,8 +18,20 @@ def add_relDB(pk_tag: int, pk_img: int, cur):
         cur.execute('INSERT into img_tag(rel_id, tag_id, img_id) VALUES(?, ?, ?)', (str(max + 1), str(pk_tag), str(pk_img)))
 
 worseImages = FastAPI()
-@worseImages.get("/add/image/{title}")
+@worseImages.get("/add/image/{title}", tags = ["add_image"])
 async def add_image(title: str):
+    """
+    Funkcja dodaje obraz o tytule `title` do bazy danych obrazkow.
+    **Argumenty:**
+
+    * `titile` (float): Tytul dodawanego obrazka.
+
+    **Wartość zwracana:**
+
+    Słownik zawierający:
+
+    * `success` - true jesli operacja zakonczyla sie powodzeniem false wpp.
+    """
     db = sqlite3.connect("fast.db")
     cur = db.cursor()
     
@@ -36,6 +48,19 @@ async def add_image(title: str):
         
 @worseImages.get("/add/tag/{title}/{tag}")
 async def add_tag(title: str, tag: str):
+    """
+    Funkcja przypisuje tag do obrazka o tytule `title`.
+    **Argumenty:**
+
+    * `title` (str): Tytul obrazka.
+    * `tag` (str): Dodawany tag.
+
+    **Wartość zwracana:**
+
+    Słownik zawierający:
+
+    * `success` - true jesli operacja zakonczyla sie powodzeniem false wpp.
+    """
     db = sqlite3.connect("fast.db")
     cur = db.cursor()
     if cur.execute("SELECT * FROM tag WHERE tag=\'{}\'".format(tag)).fetchone() == None:
@@ -49,6 +74,14 @@ async def add_tag(title: str, tag: str):
 
 @worseImages.get("/tags")
 async def list_tags():
+    """
+    Funkcja zwraca slownik w ktorym pod nazwa tagu jest wypisana liczba obrazkow z tym tagiem.
+    **Wartość zwracana:**
+
+    Słownik w postaci:
+
+    * `dict[str] = int`, gdzie `int` to liczba obrazkow posiadajacych tag   tytule `str`.
+    """
     db = sqlite3.connect("fast.db")
     cur = db.cursor()
     tags = cur.execute("SELECT A.tag, COUNT(C.title) FROM tag A, img_tag B, image C WHERE A.tag_id = B.tag_id AND B.img_id = C.img_id GROUP BY A.tag").fetchall()
@@ -59,6 +92,9 @@ async def list_tags():
     
 @worseImages.get("/images")
 async def list_images():
+    """
+    Funkcja zwraca pary w postaci `tytul_obrazka`, `lista tagow przypisanych do obrazka`.
+    """
     db = sqlite3.connect("fast.db")
     cur = db.cursor()
     tags = cur.execute("SELECT C.title, A.tag FROM tag A, img_tag B, image C WHERE A.tag_id = B.tag_id AND B.img_id = C.img_id").fetchall()
@@ -72,12 +108,22 @@ async def list_images():
     
 @worseImages.get("/images/{tag}")
 async def list_images(tag: str):
+    """
+    Funkcja listuje wszystkie obrazki przypisane do tagu `tag`
+    **Argumenty:**
+
+    * `tag` (str): Nazwa tagu jak wyzej.
+
+    **Wartość zwracana:**
+
+    slownik zawierajcy w kluczach od `'1'` do `'i'` nazwe `i`-tego obrazka.
+    """
     db = sqlite3.connect("fast.db")
     cur = db.cursor()
     tags = cur.execute("SELECT C.title FROM tag A, img_tag B, image C WHERE A.tag_id = B.tag_id AND B.img_id = C.img_id and A.tag = \'" + tag +'\'').fetchall()
     result = {}
     tmp = len(tags)
-    for i in range(tmp):
+    for i in range(1, tmp + 1):
         result[str(i)] = tags.pop()
     return result
 
@@ -86,6 +132,18 @@ class Del_class(BaseModel):
 
 @worseImages.post("/images/del")
 async def del_images(del_c: Del_class):
+    """
+    Funkcja usuwa obrazki zapisane w `images`. Argumenty przyjmowane sa w postaci jsona.
+    **Argumenty:**
+
+    * `images` list[str]: Lista obrazkow do usuniecia.
+
+    **Wartość zwracana:**
+
+    Słownik zawierający:
+
+    * `success` - true jesli operacja zakonczyla sie powodzeniem false wpp.
+    """
     db = sqlite3.connect("fast.db")
     cur = db.cursor()
     for title in del_c.images:

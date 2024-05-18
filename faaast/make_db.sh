@@ -1,0 +1,12 @@
+curl -X 'GET'  'http://localhost:8000/add/image/img1' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/image/img2' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/image/img3' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img1/tag1' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img2/tag2' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img3/tag3' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img1/tag4' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img2/tag4' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img1/tag5' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img3/tag5' -H 'accept: application/json'
+curl -X 'GET'  'http://localhost:8000/add/tag/img2/tag5' -H 'accept: application/json'
+echo end

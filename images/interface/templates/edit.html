@@ -26,11 +26,11 @@
  
 <body>
     <h1> {{ image.title }} </h1>
-    <div id="background">
+    <svg width="{{ image.sizex }}" height = "{{ image.sizey }}" viewBox="0 0 {{ image.sizex }} {{ image.sizey }}">
         {% for rect in rect_set %}
-        <div id="object{{ rect.id }}"></div>
+        <rect x="{{ rect.x }}" y="{{ rect.y }}" width="{{ rect.sizex }}" height="{{ rect.sizey }}" fill="{{ rect.color }}"></rect>
         {% endfor %}
-    </div>
+    </svg>
 	<table>
 		<tr>
 			<th> x </th>
@@ -48,15 +48,16 @@
 			<td> {{ rect.sizey }} </td>
 			<td> {{ rect.color }} </td>
 			<td>
-				<form action="remove_rect/{{ rect.id }}" method="post">
+				<form action="{% url 'interface:rmv_rect' rect.id %}" method="post">
 					{% csrf_token %}
+					<input type='hidden' id="image" name="image" value="{{ image.title }}">
 					<button id='rect' name="user" value="{{ user }}"> remove </button> 
 				</form>
 			</td>
 		</tr>
 		{% endfor %}
 	</table>
-	<form action="add" method="post">
+	<form action="{% url 'interface:add_rect' %}" method="post">
 			{% csrf_token %}
 			<label >color:</label><br>
 			<input type="text" id="color" name="color" value="{{ color }}" required><br><br>

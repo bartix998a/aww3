@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from django.urls import reverse
 from django.core.paginator import Paginator
 from .models import Image, Rect, Tag
+from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
@@ -74,23 +75,27 @@ def edit(request, img_id):
 
 def remove_rect(request, rect_id):
 	user = request.POST.get('user')
+	image = request.POST.get('image')
+
 	rect = get_object_or_404(Rect, pk = rect_id)
+	image_proper = get_object_or_404(Image, title=image)
+
 	if user != rect.image.user.username:
 		return HttpResponse("remove not working")#HttpResponseRedirect(reverse('interface:index'))
 	rect.delete()
-	return HttpResponseRedirect(reverse('interface:index')) #TODO: redirect to edit
+	return render(request, 'edit.html', {'user': user, 'image': image_proper, 'rect_set': image_proper.rect_set.all()}) #TODO: redirect to edit
 
 def add_rect(request):
 	x, y, sizex, sizey = request.POST.get('x'), request.POST.get('y'), request.POST.get('sizex'), request.POST.get('sizey')
 	image = request.POST.get('image')
 	user = request.POST.get('user')
 	color = request.POST.get('color')
-	image_proper = get_object_or_404(Image, title=image)
+	image_proper = get_object_or_404(Image, pk=image)
 	if x == None or y == None or sizex == None or sizey == None or image == None or user == None:
 		return HttpResponse("soething wrong with post")
 	rect = Rect(x=x, y=y, sizex = sizex, sizey=sizey, image=image_proper, color=color)
 	rect.save()
-	return render(request, 'edit.html', {'user': user, 'image': image, 'rect_set': image_proper.rect_set.all()})
+	return render(request, 'edit.html', {'user': user, 'image': image_proper, 'rect_set': image_proper.rect_set.all()})
 
 def filter(request, page_no):
 	tag_set = set()
@@ -122,3 +127,16 @@ def filter(request, page_no):
 		'filtered': True
 	}
 	return render(request, "default.html", context)
+
+def add_img(request):
+	image_title = request.POST.get('image')
+	username = request.POST.get('user')
+	sizex = request.POST.get('sizex')
+	sizey = request.POST.get('sizey')
+	desc = request.POST.get('description')
+	user = get_object_or_404(User, username=username)
+	image, created = Image.objects.get_or_create(title=image_title, sizex=sizex, sizey=sizey, user=user, description=desc)
+	if not created:
+		return HttpResponse("Image already exists\n")
+	image.save()
+	return render(request, "editor.html", {'user': user, 'image_set': user.image_set.all()})

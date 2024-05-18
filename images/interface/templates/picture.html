@@ -26,11 +26,11 @@
  
 <body>
     <h1> {{ image.title }} </h1>
-    <div id="background">
+    <svg width="{{ image.sizex }}" height = "{{ image.sizey }}" viewBox="0 0 {{ image.sizex }} {{ image.sizey }}">
         {% for rect in rect_set %}
-        <div id="object{{ rect.id }}"></div>
+        <rect x="{{ rect.x }}" y="{{ rect.y }}" width="{{ rect.sizex }}" height="{{ rect.sizey }}" fill="{{ rect.color }}"></rect>
         {% endfor %}
-    </div>
+    </svg>
     <h2> description </h2>
     <p> {{ image.description }} </p>
     <h2> Tags </h2>

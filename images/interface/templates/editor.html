@@ -7,12 +7,22 @@
 </head>
 <body>
 
+<h2> Add image </h2>
+<form action="{% url 'interface:add_img' %}" method="post">
+	{% csrf_token %}
+	<label> title </label>
+	<input type ='text' id='title' name='image' value='image title'><br><br>
+	<input type="number" id="sizex" name="sizex" value="0" required><br><br>
+	<input type="number" id="sizey" name="sizey" value="0" required><br><br>
+	<input type="text" id="description" name="description" value=""><br><br>
+	<button id='rect' id='submit' name="user" value="{{ user }}"> submit </button> 
+</form>
 <h2>Obrazki</h2>
 <ol>
 	{% for image in image_set %}
 	<li> {{ image.title }}
 	
-	<form action="edit/{{ image.id }}" method="post">
+	<form action="{% url 'interface:edit' image.id %}" method="post">
 		{% csrf_token %}
 		<button id='username' name="user" value={{ user }}> edit </button> 
 	</form>
